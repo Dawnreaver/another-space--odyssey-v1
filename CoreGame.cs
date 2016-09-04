@@ -45,7 +45,7 @@ public class CoreGame : MonoBehaviour
     public float distance = 10.0f;
 
     #region buildings
-    List<GameObject> m_builtBuildings;
+    private List<GameObject> m_builtBuildings;
     #endregion
 
     #region object pools
@@ -58,10 +58,15 @@ public class CoreGame : MonoBehaviour
     public ObjectPoolingClass m_poolingObject;
     #endregion
 
+    #region resources
+
+    public List<GameObject> m_resources;
+    #endregion
+
     void Start()
     {
         m_poolingObject = new ObjectPoolingClass(gameObject, m_inGameMenuLogic.gameObject, m_coreBuilding, m_resourceProductionEffect);
-
+        m_resources = new List<GameObject>();
         m_builtBuildings = new List<GameObject>();
         m_constructionCells = new List<GameObject>();
         Transform[] cells = m_constructionGrid.GetComponentsInChildren<Transform>();
