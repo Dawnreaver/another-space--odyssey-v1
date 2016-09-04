@@ -50,10 +50,10 @@ public class ResourceBehaviour : MonoBehaviour
             {
                 m_timerActive = false;
                 m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
-                if( m_isConsumable)
+                /*if( m_isConsumable)
                 {
                     Destroy(gameObject);
-                }
+                }*/
             }
         }
 	}
@@ -64,14 +64,14 @@ public class ResourceBehaviour : MonoBehaviour
 
         switch (m_resourceBreakdownType)
         {
-            case m_resourceBreakdownType.Splits :
-                foreach( Transform fragment in GetComponentsinCildren<Transform>())
+            case ResourceBreakdownTypes.Splits :
+                foreach( Transform fragment in GetComponentInChildren<Transform>())
                 {
                     m_resourceBreakdownModel.Add(fragment);
                     fragment.gameObject.GetComponent<Renderer>().enabled = false;
                     fragment.gameObject.GetComponent<Collider>().enabled = false;   
                 }
-                m_breakdownCount = m_resourceBreakdownModel.count();
+                m_breakdownCount = m_resourceBreakdownModel.Count();
                 if(m_debugScript)
                 {
                     Debug.Log(m_breakdownCount);
@@ -82,14 +82,14 @@ public class ResourceBehaviour : MonoBehaviour
 
             break;
 
-            case m_resourceBreakdownType.Shrinks :
+            case ResourceBreakdownTypes.Shrinks :
             // Adjust heigth of object depending on the maximunm amount of available resources
             m_resourceTransformPositionZ = gameObject.transform.position.z;
             m_shrinkOffset = m_resourceAmmount / m_resourceAmmountMaximum;
             AdjustResourceHeight();
             break;
 
-            case m_resourceBreakdownType.Produced :
+            case ResourceBreakdownTypes.Produced :
             // Do fancy things if the resource is produced e.g. in the greenhouse
             break;
         }
@@ -111,8 +111,8 @@ public class ResourceBehaviour : MonoBehaviour
         
         for (int a = 0; a <= tempResourceCount; a++)
         {
-            m_resourceBreakdownModel(a).gameObject.GetComponent<Renderer>().enabled = true;
-             m_resourceBreakdownModel(a).gameObject.GetComponent<Collider>().enabled = true;
+            m_resourceBreakdownModel[a].gameObject.GetComponent<Renderer>().enabled = true;
+             m_resourceBreakdownModel[a].gameObject.GetComponent<Collider>().enabled = true;
         }
     }
 
@@ -121,7 +121,7 @@ public class ResourceBehaviour : MonoBehaviour
         gameObject.transform.position = new Vector3(gameObject.transform.position.x,gameObject.transform.position.y,m_resourceTransformPositionZ*m_shrinkOffset);
         if(m_debugScript)
         {
-            Debug.Log("Adjusting resource height: Offset = "+ m_shrinkOffset"; Z-Position ="+m_resourceTransformPositionZ*m_shrinkOffset);
+            Debug.Log("Adjusting resource height: Offset = "+ m_shrinkOffset+"; Z-Position ="+m_resourceTransformPositionZ*m_shrinkOffset);
         }
     }
 }
