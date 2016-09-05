@@ -5,15 +5,15 @@ using System.Linq;
 
 public class ResourceBehaviour : MonoBehaviour
 {
-    public bool m_debugScript = false;
     public bool m_manualPurge = false;
     public GameObject m_coreGameObject;
     
-    public enum ResourceTypes {ScrapMetal, Ice, Rock, AsteroidMetal, Crystal, Food}
+    public enum ResourceTypes { AsteroidMetal, Crystal, Ice, Rock, ScrapMetal}
     public ResourceTypes m_resourceType;
 
-    public enum ResourceBreakdownTypes {Shrinks, Splits, Produced}
+    public enum ResourceBreakdownTypes { Breaks, Shrinks}
     public ResourceBreakdownTypes m_resourceBreakdownType;
+    
     public float m_resourceAmmount = 100.0f;
     public float m_resourceAmmountMaximum = 300.0f;
     // Splitable resource
@@ -23,12 +23,15 @@ public class ResourceBehaviour : MonoBehaviour
     // Shrinkable resource
     public float m_resourceTransformPositionY;
     public float m_shrinkOffset = 0.0f;
+
+    private float m_resourceDepot = 0.0f;
+
     // Produceable resource
     public float m_productionTime;
-    public bool m_automatedProduction = false;
+    public bool m_productionActive = false;
     
-    public bool m_timerActive = false;
-    public bool m_isInteractedWithByPlayer = false;
+    public bool m_productionTimerActive = false;
+    public bool m_isHarvestedByPlayer = false;
 
     public float m_gatheringTime;
 
@@ -43,39 +46,64 @@ public class ResourceBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-	    if(m_timerActive && m_automatedProduction)
-        {
-            m_gatheringTime -= 1 * Time.deltaTime;
-
-            if( m_gatheringTime < 0.0f)
-            {
-                m_timerActive = false;
-                m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
-                /*if( m_isConsumable)
-                {
-                    Destroy(gameObject);
-                }*/
-            }
-        }
-
+        // Debug function until the production of resources is completed	
         if(m_manualPurge)
         {
             PurgeResource();
             m_manualPurge = false;
         }
 
-        if(m_isInteractedWithByPlayer)
+        if(m_isHarvestedByPlayer)
         {
             switch(m_resourceBreakdownType)
             {
-                case ResourceBreakdownTypes.Produced :
+            	case ResourceBreakdownTypes.Breaks :
+            		if(m_productionTimerActive && m_resourceAmmount > 0.0f)
+			        {
+			            m_gatheringTime -= 1 * Time.deltaTime;
+			            m_resourceDepot += 1 * Time.deltaTime;
+
+			            if( m_gatheringTime < 0.0f)
+			            {
+			                m_productionTimerActive = false;
+			                m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
+			            }
+			            
+			        }
+			        else if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
+			        {
+			        	switch(m_resourceType)
+			        	{
+			        		case ResourceTypes.AsteroidMetal :
+			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
+			        		break;
+
+			        		case ResourceTypes.Crystal :
+			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
+			        		break;
+
+			        		case ResourceTypes.Rock :
+			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
+			        		break;
+
+			        		case ResourceTypes.ScrapMetal :
+			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
+			        		break;
+			        	}
+			        	PurgeResource();
+			        	m_resourceDepot = 0.0f
+			        	m_productionActive = true;
+			        }
+			        else if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
+			        {
+			        	Debug.Log("Resource depleted!");
+			        	gameObject.SetActive(false);
+			        }
                 break;
 
                 case ResourceBreakdownTypes.Shrinks :
+                	
                     AdjustResourceHeight();
-                break;
-
-                case ResourceBreakdownTypes.Splits :
                 break;
             }
         }
@@ -87,7 +115,7 @@ public class ResourceBehaviour : MonoBehaviour
 
         switch (m_resourceBreakdownType)
         {
-            case ResourceBreakdownTypes.Splits :
+            case ResourceBreakdownTypes.Breaks :
                 foreach( Transform fragment in GetComponentInChildren<Transform>())
                 {
                     m_resourceBreakdownModel.Add(fragment);
@@ -95,10 +123,6 @@ public class ResourceBehaviour : MonoBehaviour
                     fragment.gameObject.GetComponent<Collider>().enabled = false;   
                 }
                 m_breakdownCount = m_resourceBreakdownModel.Count();
-                if(m_debugScript)
-                {
-                    Debug.Log(m_breakdownCount);
-                }
                 m_resourceBreakdownTreshold = m_resourceAmmountMaximum / m_breakdownCount;
                 m_resourceBreakdownModel.OrderBy( Transform => Transform.transform.position.z);
                 PurgeResource();
@@ -109,21 +133,28 @@ public class ResourceBehaviour : MonoBehaviour
                 m_resourceTransformPositionY = gameObject.transform.position.y;
                 AdjustResourceHeight();
             break;
-
-            case ResourceBreakdownTypes.Produced :
-                // Do fancy things if the resource is produced e.g. in the greenhouse
-            break;
         }
        
     }
 
+    public void StopHarvest()
+    {
+    	switch(m_resourceBreakdownType)
+    	{
+    		case ResourceBreakdownTypes.Breaks :
+    			PurgeResource();
+    			m_isInteractedWithByPlayer = false;
+    		break;
+
+    		case ResourceBreakdownTypes.Shrinks :
+    		// do something when shrinkable resource harveesting is stopped
+    		m_isInteractedWithByPlayer = false;
+    		break;
+    	}	
+    }
+
     void PurgeResource()
     {
-        if(m_debugScript)
-        {
-            Debug.Log("Purging Resource");
-        }
-        //m_resourceBreakdownModel.OrderBy( Transform => Transform.transform.position.z);
         int tempResourceCount = Mathf.RoundToInt(m_resourceAmmount / m_resourceBreakdownTreshold);
         if(m_debugScript)
         {
@@ -138,17 +169,20 @@ public class ResourceBehaviour : MonoBehaviour
         {
             m_resourceBreakdownModel[a].gameObject.GetComponent<Renderer>().enabled = true;
             m_resourceBreakdownModel[a].gameObject.GetComponent<Collider>().enabled = true;
-        }
-        
+        }   
     }
 
     void AdjustResourceHeight()
     {
         m_shrinkOffset = m_resourceAmmount / m_resourceAmmountMaximum;
         gameObject.transform.position = new Vector3(gameObject.transform.position.x,m_resourceTransformPositionY * m_shrinkOffset, gameObject.transform.position.z);
-        if(m_debugScript)
-        {
-            Debug.Log("Adjusting resource height: Offset = "+ m_shrinkOffset+"; Y-Position ="+m_resourceTransformPositionY*m_shrinkOffset);
-        }
+    }
+
+    void OnTriggerEnter( Collider other)
+    {
+    	if(other.gameObject.tag =="Player" || other.gameObject.tag == "Drone")
+    	{
+    		m_isHarvestedByPlayer = true;
+    	}
     }
 }
