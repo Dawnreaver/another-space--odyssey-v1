@@ -6,6 +6,7 @@ using System.Linq;
 public class ResourceBehaviour : MonoBehaviour
 {
     public bool m_debugScript = false;
+    public bool m_manualPurge = false;
     public GameObject m_coreGameObject;
     
     public enum ResourceTypes {ScrapMetal, Ice, Rock, AsteroidMetal, Crystal, Food}
@@ -14,13 +15,13 @@ public class ResourceBehaviour : MonoBehaviour
     public enum ResourceBreakdownTypes {Shrinks, Splits, Produced}
     public ResourceBreakdownTypes m_resourceBreakdownType;
     public float m_resourceAmmount = 100.0f;
-    private float m_resourceAmmountMaximum = 300.0f;
+    public float m_resourceAmmountMaximum = 300.0f;
     // Splitable resource
     public List<Transform> m_resourceBreakdownModel;
     public float m_resourceBreakdownTreshold;
     public int m_breakdownCount;
     // Shrinkable resource
-    public float m_resourceTransformPositionZ;
+    public float m_resourceTransformPositionY;
     public float m_shrinkOffset = 0.0f;
     // Produceable resource
     public float m_productionTime;
@@ -56,7 +57,29 @@ public class ResourceBehaviour : MonoBehaviour
                 }*/
             }
         }
-	}
+
+        if(m_manualPurge)
+        {
+            PurgeResource();
+            m_manualPurge = false;
+        }
+
+        if(m_isInteractedWithByPlayer)
+        {
+            switch(m_resourceBreakdownType)
+            {
+                case ResourceBreakdownTypes.Produced :
+                break;
+
+                case ResourceBreakdownTypes.Shrinks :
+                    AdjustResourceHeight();
+                break;
+
+                case ResourceBreakdownTypes.Splits :
+                break;
+            }
+        }
+    }
 
     void InitialiseResourceBrakedown()
     {
@@ -79,18 +102,16 @@ public class ResourceBehaviour : MonoBehaviour
                 m_resourceBreakdownTreshold = m_resourceAmmountMaximum / m_breakdownCount;
                 m_resourceBreakdownModel.OrderBy( Transform => Transform.transform.position.z);
                 PurgeResource();
-
             break;
 
             case ResourceBreakdownTypes.Shrinks :
-            // Adjust heigth of object depending on the maximunm amount of available resources
-            m_resourceTransformPositionZ = gameObject.transform.position.z;
-            m_shrinkOffset = m_resourceAmmount / m_resourceAmmountMaximum;
-            AdjustResourceHeight();
+                // Adjust heigth of object depending on the maximunm amount of available resources
+                m_resourceTransformPositionY = gameObject.transform.position.y;
+                AdjustResourceHeight();
             break;
 
             case ResourceBreakdownTypes.Produced :
-            // Do fancy things if the resource is produced e.g. in the greenhouse
+                // Do fancy things if the resource is produced e.g. in the greenhouse
             break;
         }
        
@@ -108,20 +129,26 @@ public class ResourceBehaviour : MonoBehaviour
         {
             Debug.Log("CurrentFragmentCount: "+ tempResourceCount);
         }
-        
+        for (int b = 0; b < m_breakdownCount; b++)
+        {
+            m_resourceBreakdownModel[b].gameObject.GetComponent<Renderer>().enabled = false;
+            m_resourceBreakdownModel[b].gameObject.GetComponent<Collider>().enabled = false;
+        }
         for (int a = 0; a <= tempResourceCount; a++)
         {
             m_resourceBreakdownModel[a].gameObject.GetComponent<Renderer>().enabled = true;
-             m_resourceBreakdownModel[a].gameObject.GetComponent<Collider>().enabled = true;
+            m_resourceBreakdownModel[a].gameObject.GetComponent<Collider>().enabled = true;
         }
+        
     }
 
     void AdjustResourceHeight()
     {
-        gameObject.transform.position = new Vector3(gameObject.transform.position.x,gameObject.transform.position.y,m_resourceTransformPositionZ*m_shrinkOffset);
+        m_shrinkOffset = m_resourceAmmount / m_resourceAmmountMaximum;
+        gameObject.transform.position = new Vector3(gameObject.transform.position.x,m_resourceTransformPositionY * m_shrinkOffset, gameObject.transform.position.z);
         if(m_debugScript)
         {
-            Debug.Log("Adjusting resource height: Offset = "+ m_shrinkOffset+"; Z-Position ="+m_resourceTransformPositionZ*m_shrinkOffset);
+            Debug.Log("Adjusting resource height: Offset = "+ m_shrinkOffset+"; Y-Position ="+m_resourceTransformPositionY*m_shrinkOffset);
         }
     }
 }
