@@ -55,56 +55,39 @@ public class ResourceBehaviour : MonoBehaviour
 
         if(m_isHarvestedByPlayer)
         {
-            switch(m_resourceBreakdownType)
+            if(m_productionTimerActive && m_resourceAmmount > 0.0f)
             {
-            	case ResourceBreakdownTypes.Breaks :
-            		if(m_productionTimerActive && m_resourceAmmount > 0.0f)
-			        {
-			            m_gatheringTime -= 1 * Time.deltaTime;
-			            m_resourceDepot += 1 * Time.deltaTime;
+                m_gatheringTime -= 1 * Time.deltaTime;
+                m_resourceDepot += 1 * Time.deltaTime;
 
-			            if( m_gatheringTime < 0.0f)
-			            {
-			                m_productionTimerActive = false;
-			                m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
-			            }
-			            
-			        }
-			        else if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
-			        {
-			        	switch(m_resourceType)
-			        	{
-			        		case ResourceTypes.AsteroidMetal :
-			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
-			        		break;
-
-			        		case ResourceTypes.Crystal :
-			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
-			        		break;
-
-			        		case ResourceTypes.Rock :
-			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
-			        		break;
-
-			        		case ResourceTypes.ScrapMetal :
-			        		// add resource depot to player inventory += Mathf.Round(m_resourceDepot)
-			        		break;
-			        	}
-			        	PurgeResource();
-			        	m_resourceDepot = 0.0f
-			        	m_productionActive = true;
-			        }
-			        else if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
-			        {
-			        	Debug.Log("Resource depleted!");
-			        	gameObject.SetActive(false);
-			        }
-                break;
-
-                case ResourceBreakdownTypes.Shrinks :
-                	
+                if(m_resourceType == ResourceBreakdownTypes.Shrinks)
+                {
                     AdjustResourceHeight();
-                break;
+                }
+
+                if( m_gatheringTime < 0.0f)
+                {
+                    m_productionTimerActive = false;
+                    m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
+                }
+                
+            }
+            else if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
+            {
+                PlayerInventory.AddResourceToInventory(m_resourceType, m_resourceDepot);
+                m_resourceAmmount -= m_resourceDepot;
+                m_resourceDepot = 0.0f
+                if(m_resourceType == ResourceBreakdownTypes.Breaks)
+                {                    
+                    PurgeResource();
+                }
+
+                m_productionActive = true;
+            }
+            else if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
+            {
+                Debug.Log("Resource depleted!");
+                gameObject.SetActive(false);
             }
         }
     }
@@ -113,7 +96,7 @@ public class ResourceBehaviour : MonoBehaviour
     {
          m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
 
-        switch (m_resourceBreakdownType)
+        switch(m_resourceBreakdownType)
         {
             case ResourceBreakdownTypes.Breaks :
                 foreach( Transform fragment in GetComponentInChildren<Transform>())
@@ -160,12 +143,14 @@ public class ResourceBehaviour : MonoBehaviour
         {
             Debug.Log("CurrentFragmentCount: "+ tempResourceCount);
         }
-        for (int b = 0; b < m_breakdownCount; b++)
+
+        for(int b = 0; b < m_breakdownCount; b++)
         {
             m_resourceBreakdownModel[b].gameObject.GetComponent<Renderer>().enabled = false;
             m_resourceBreakdownModel[b].gameObject.GetComponent<Collider>().enabled = false;
         }
-        for (int a = 0; a <= tempResourceCount; a++)
+
+        for(int a = 0; a <= tempResourceCount; a++)
         {
             m_resourceBreakdownModel[a].gameObject.GetComponent<Renderer>().enabled = true;
             m_resourceBreakdownModel[a].gameObject.GetComponent<Collider>().enabled = true;
