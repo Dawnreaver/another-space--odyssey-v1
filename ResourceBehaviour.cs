@@ -60,7 +60,7 @@ public class ResourceBehaviour : MonoBehaviour
                 m_gatheringTime -= 1 * Time.deltaTime;
                 m_resourceDepot += 1 * Time.deltaTime;
 
-                if(m_resourceType == ResourceBreakdownTypes.Shrinks)
+                if(m_resourceBreakdownType == ResourceBreakdownTypes.Shrinks)
                 {
                     AdjustResourceHeight();
                 }
@@ -74,10 +74,10 @@ public class ResourceBehaviour : MonoBehaviour
             }
             else if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
             {
-                PlayerInventory.AddResourceToInventory(m_resourceType, m_resourceDepot);
+                m_coreGameObject.GetComponent<PlayerInventory>().AddResourceToInventory(m_resourceType, m_resourceDepot);
                 m_resourceAmmount -= m_resourceDepot;
-                m_resourceDepot = 0.0f
-                if(m_resourceType == ResourceBreakdownTypes.Breaks)
+                m_resourceDepot = 0.0f;
+                if(m_resourceBreakdownType == ResourceBreakdownTypes.Breaks)
                 {                    
                     PurgeResource();
                 }
@@ -126,12 +126,12 @@ public class ResourceBehaviour : MonoBehaviour
     	{
     		case ResourceBreakdownTypes.Breaks :
     			PurgeResource();
-    			m_isInteractedWithByPlayer = false;
+                m_isHarvestedByPlayer = false;
     		break;
 
     		case ResourceBreakdownTypes.Shrinks :
-    		// do something when shrinkable resource harveesting is stopped
-    		m_isInteractedWithByPlayer = false;
+                // do something when shrinkable resource harveesting is stopped
+                m_isHarvestedByPlayer = false;
     		break;
     	}	
     }
@@ -139,10 +139,6 @@ public class ResourceBehaviour : MonoBehaviour
     void PurgeResource()
     {
         int tempResourceCount = Mathf.RoundToInt(m_resourceAmmount / m_resourceBreakdownTreshold);
-        if(m_debugScript)
-        {
-            Debug.Log("CurrentFragmentCount: "+ tempResourceCount);
-        }
 
         for(int b = 0; b < m_breakdownCount; b++)
         {

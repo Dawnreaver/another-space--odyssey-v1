@@ -5,7 +5,7 @@ using System.Linq;
 
 public class PlayerInventory : MonoBehaviour
 {
-	public List<InventoryItem>() m_inventoryItemList;
+	public List<InventoryItem> m_inventoryItemList;
 
 	void Start()
 	{
@@ -18,21 +18,20 @@ public class PlayerInventory : MonoBehaviour
 		if(m_inventoryItemList.Count() == 0 )
 		{
 			InventoryItem newItem = new InventoryItem();
-			// try name the item by resource type
-			newItem.m_inventoryItemName = string(resourceType);
-			newItem.m_inventoryItemType = InventoryItem.inventoryItemTypes.Reource;
+            newItem.m_inventoryItemName = SetitemName(resourceType);
+			newItem.m_inventoryItemType = InventoryItem.InventoryItemTypes.Resource;
 			newItem.m_resourceType = resourceType;
-			newItem.m_resourceAmount = Mathf.Round(resourceAmount);
+			newItem.m_resourceAmount = (int)Mathf.Round(resourceAmount);
 			m_inventoryItemList.Add(newItem);
 		}
 		else if(m_inventoryItemList.Count() >= 1)
 		{
 			for(int a = 0; a < m_inventoryItemList.Count(); a++)
 			{
-				if(m_inventoryItemList[a].m_resourceType == resourceType && m_inventoryItemList[a].m_inventoryItemType == InventoryItem.inventoryItemTypes.Reource)
+				if(m_inventoryItemList[a].m_resourceType == resourceType && m_inventoryItemList[a].m_inventoryItemType == InventoryItem.InventoryItemTypes.Resource)
 				{
 					// destiguish between liquid and solid items
-					m_inventoryItemList[a].m_resourceAmount += Mathf.Round(resourceAmount);
+					m_inventoryItemList[a].m_resourceAmount += (int)Mathf.Round(resourceAmount);
 				}
 			}
 		}
@@ -47,4 +46,29 @@ public class PlayerInventory : MonoBehaviour
 	{
 		// save player inventory ? 
 	}
+
+    string SetitemName(ResourceBehaviour.ResourceTypes resourceType)
+    {
+        string itemName = "";
+        switch (resourceType)
+        {
+            case ResourceBehaviour.ResourceTypes.AsteroidMetal:
+                itemName ="Astereroid Metal";
+            break;
+            case ResourceBehaviour.ResourceTypes.Crystal:
+                itemName = "Crystal";
+                break;
+            case ResourceBehaviour.ResourceTypes.Ice:
+                itemName = "Water";
+                break;
+            case ResourceBehaviour.ResourceTypes.Rock:
+                itemName = "Rock";
+                break;
+            case ResourceBehaviour.ResourceTypes.ScrapMetal:
+                itemName = "Scrap Metal";
+                break;
+        }
+        return itemName;
+    }
+    
 }
