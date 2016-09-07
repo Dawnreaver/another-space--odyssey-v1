@@ -8,7 +8,7 @@ public class CoreBuilding : MonoBehaviour
     public Material[] m_buildingMaterials;
 
     public string m_buildingFriendlyName ="Building";
-    public string m_buildingFriendlyName ="Building001";
+    public string m_buildingSystemName ="Building001";
 
     public bool m_producesEnergy = false;
     public bool m_consumesEnergy = false;

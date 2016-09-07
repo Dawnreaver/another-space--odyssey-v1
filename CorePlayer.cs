@@ -7,7 +7,7 @@ public class CorePlayer : MonoBehaviour
 {
 	public string m_playerFriendlyName ="";
 	
-	public enum PlayerJobClasses {ScienceOfficer, BioMedicalOfficer, Chief Engineer}
+	public enum PlayerJobClasses {ScienceOfficer, BioMedicalOfficer, ChiefEngineer}
 	public PlayerJobClasses m_playerJob = PlayerJobClasses.ScienceOfficer;
 	public enum PlayerGenders {male, female, undefined}
 	public PlayerGenders m_playerGender = PlayerGenders.undefined;

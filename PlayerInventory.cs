@@ -15,6 +15,7 @@ public class PlayerInventory : MonoBehaviour
 
 	public void AddResourceToInventory( ResourceBehaviour.ResourceTypes resourceType, float resourceAmount)
 	{
+        Debug.Log("Adding resource to item");
 		if(m_inventoryItemList.Count() == 0 )
 		{
 			InventoryItem newItem = new InventoryItem();

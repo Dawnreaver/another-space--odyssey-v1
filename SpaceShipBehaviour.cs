@@ -27,7 +27,7 @@ public class SpaceShipBehaviour : MonoBehaviour
 		} 
 	}
 
-	public FixedUpdate()
+	void FixedUpdate()
 	{
 		// Player can scan once the AiCore is live meaning the sensor can be utilised
 		if(!m_sensorScanReady && m_currentAiCoreSensorLevel != AiCoreSensorLevels.Offline)
@@ -77,7 +77,7 @@ public class SpaceShipBehaviour : MonoBehaviour
 		int tempfixedParts = 0;
 		for( int a = 0; a < m_spaceShipParts.Count(); a++)
 		{
-			if(m_spaceShipParts[a].GetComponent<SpaceShipPart>().m_spaceShipPartCondition == SpaceShipPart.Conditions.FinishedRepair)
+			if(m_spaceShipParts[a].GetComponent<SpaceShipPart>().m_spaceShipPartCondition == SpaceShipPart.SpaceShipPartConditions.FinishedRepair)
 			{
 				tempfixedParts +=1;
 			}

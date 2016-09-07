@@ -35,7 +35,6 @@ public class CameraControlls : MonoBehaviour
         switch (m_inputMethod)
         {
             case InputMethods.Controller:
-                Debug.Log("Controller attached");
                 if(Input.GetAxis("HorizontalLeft") > 0.1f || Input.GetAxis("HorizontalLeft") < -0.1f && gameObject.transform.position.x <= m_cameraPositionXMax && gameObject.transform.position.x >= m_cameraPositionXMin)
                 {
                     gameObject.transform.position = new Vector3(gameObject.transform.position.x+ 1*Time.deltaTime*m_controllerSensitivity*Input.GetAxis("HorizontalLeft"), gameObject.transform.position.y, gameObject.transform.position.z);
@@ -48,7 +47,6 @@ public class CameraControlls : MonoBehaviour
                 break;
 
             case InputMethods.Mouse:
-                Debug.Log("Using mouse");
                 if(Input.GetButtonDown("Fire2") && gameObject.transform.position.x <= m_cameraPositionXMax && gameObject.transform.position.x >= m_cameraPositionXMin)
                 {
                     m_lastMousePosition = new Vector3(Input.mousePosition.x, 0.0f, Input.mousePosition.y);
@@ -65,7 +63,6 @@ public class CameraControlls : MonoBehaviour
             break;
 
             case InputMethods.Touch:
-                Debug.Log("Touch input");
             break;
         }
 	}
