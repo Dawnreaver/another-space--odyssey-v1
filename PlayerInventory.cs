@@ -30,7 +30,6 @@ public class PlayerInventory : MonoBehaviour
 			{
 				if(m_inventoryItemList[a].m_resourceType == resourceType && m_inventoryItemList[a].m_inventoryItemType == InventoryItem.InventoryItemTypes.Resource)
 				{
-					// destiguish between liquid and solid items
 					m_inventoryItemList[a].m_resourceAmount += (int)Mathf.Round(resourceAmount);
 				}
 			}

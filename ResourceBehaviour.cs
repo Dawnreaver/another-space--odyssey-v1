@@ -5,6 +5,8 @@ using System.Linq;
 
 public class ResourceBehaviour : MonoBehaviour
 {
+    public string m_resourceFriendlyName ="Resource";
+    public string m_resourceSystemName = "Resource001";
     public bool m_manualPurge = false;
     public GameObject m_coreGameObject;
     
