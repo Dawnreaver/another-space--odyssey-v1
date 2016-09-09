@@ -89,14 +89,14 @@ public class ResourceBehaviour : MonoBehaviour
             /*else*/ if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
             {
                 Debug.Log("Resource depleted!");
-                if(m_resourceType != ResourceBreakdownTypes.ScrapMetal)
+                if(m_resourceType != ResourceTypes.ScrapMetal)
                 {
                     gameObject.SetActive(false);
                 }
                 else
                 {
                     GetComponent<SpaceShipPart>().m_spaceShipPartCondition = SpaceShipPart.SpaceShipPartConditions.ReadyToRepair;
-                    gameObject.Renderer.enabled = false;
+                    gameObject.GetComponent<Renderer>().enabled = false;
                 }
             }
         }

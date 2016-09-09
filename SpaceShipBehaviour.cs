@@ -58,11 +58,11 @@ public class SpaceShipBehaviour : MonoBehaviour
 				m_spaceShipStorageCapacity = 250.0f;
 			break;
 
-			case SpaceShipStorageLevels.StorageLevle2 :
+			case SpaceShipStorageLevels.StorageLevel2 :
 				m_spaceShipStorageCapacity = 500.0f;
 			break;
 
-			case SpaceShipStorageLevels.StorageLevle3 :
+			case SpaceShipStorageLevels.StorageLevel3 :
 				m_spaceShipStorageCapacity = 1000.0f;
 			break;
 		}
