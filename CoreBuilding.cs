@@ -9,11 +9,12 @@ public class CoreBuilding : MonoBehaviour
 
     public string m_buildingFriendlyName ="Building";
     public string m_buildingSystemName ="Building001";
-
+    public CoreGame.BuildingTypes m_buildingType;
     public bool m_producesEnergy = false;
     public bool m_consumesEnergy = false;
     public float m_energyProduction = 0.0f;
     public float m_energyConsumption = 0.0f;
+    public float m_energyStorageCapacityBuilding = 500.0f;
     private float m_energyDepot = 0.0f;
     
 
@@ -24,6 +25,7 @@ public class CoreBuilding : MonoBehaviour
         {
             m_coreGame = GameObject.FindGameObjectWithTag("CoreGameObject").GetComponent<CoreGame>();
         }
+        if ()
 	}
 	
 	// Update is called once per frame
@@ -43,6 +45,8 @@ public class CoreBuilding : MonoBehaviour
     {
         switch(buildingType)
         {
+            m_buildingType = buildingType;
+
             case CoreGame.BuildingTypes.Greenhouse:
                 SetBuilding(0);
                 gameObject.name = "Green House";

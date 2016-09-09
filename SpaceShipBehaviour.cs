@@ -5,24 +5,35 @@ using System.Linq;
 
 public class SpaceShipBehaviour : MonoBehaviour
 {
+	#region space ship
 	public string m_spaceShipFriendlyName = "Athena";
 	public List<GameObject> m_spaceShipParts;
-	public float m_spaceShipHullintegrity = 0.0f;
+	public float m_spaceShipStorageCapacity = 250.0f;
+	public enum SpaceShipStorageLevels{ StorageLevle1, StorageLevel2, StorageLevel3}
+	public SpaceShipStorageLevels m_spaceShipStrorageLevel;
+	public float m_spaceShipHullIntegrity = 0.0f;
 	public float m_spaceShipUseability = 0.0f;
+	#endregion
 
-	public bool m_aiCoreLive = false;
+	#region reactor drive
 	public bool m_reactorDriveLive = false;
+    public float m_energyCapacityTarget = 10.0f;
+	#endregion
 
+	#region Ai
+	public bool m_aiCoreLive = false;
 	public enum AiCoreSensorLevels{Offline, SensorLevel1, SensorLevel2, SensorLevel3, SensorLevel4}
 	public AiCoreSensorLevels m_currentAiCoreSensorLevel;
 	public float m_sensorScanCooldownTime = 30.0f;
 	private float tempSensorTime = 0.0f;
 	public bool m_sensorScanReady = true;
+	#endregion
 
-	public float m_spaceShipStorageCapacity = 250.0f;
-	public enum SpaceShipStorageLevels{ StorageLevle1, StorageLevel2, StorageLevel3}
-	public SpaceShipStorageLevels m_spaceShipStrorageLevel;
-
+	
+	
+	#region BioDeck
+	float m_bioDeckHP = 100.0f;
+	#endregion
 
 	void Start()
 	{
@@ -105,6 +116,6 @@ public class SpaceShipBehaviour : MonoBehaviour
 				tempfixedParts +=1;
 			}
 		}
-		m_spaceShipHullintegrity = tempfixedParts/m_spaceShipParts.Count()*100.0f;
+		m_spaceShipHullIntegrity = tempfixedParts/m_spaceShipParts.Count()*100.0f;
 	}
 }

@@ -20,17 +20,10 @@ public class CoreGame : MonoBehaviour
     #endregion
 
     #region resource variables
-    public float m_storedEnergy = 0.0f;
+    public float m_energyStored = 0.0f;
+    public float m_energyStorageCapacity;
     public float m_temporaryStoredEnergy = 0.0f;
     public float m_gatherResourceTime = 10.0f;
-    #endregion
-
-    // v move section to "SpaceShipBehaviour.cs"
-    #region space ship "Athena"
-    public bool m_buildingSelected = false;
-    int m_storageCapacity = 25;
-    float m_energyCapacity = 10.0f;
-    float m_bioDeckHP = 100.0f;
     #endregion
 
     #region build mode
@@ -78,6 +71,7 @@ public class CoreGame : MonoBehaviour
                 m_constructionCells.Add(cells[a].gameObject);
             }
         }
+        m_energyStorageCapacity = DetermineEnergyStorageCapacity();
     }
 
     void FixedUpdate()
@@ -259,5 +253,18 @@ public class CoreGame : MonoBehaviour
 
         m_poolingObject.m_resourceProductionEffectPool.Add(usedEffect);
         usedEffect.SetActive(false);
+    }
+
+    public float DetermineEnergyStorageCapacity()
+    {
+        float tempCapacity = 0.0f;
+        for( int a = 0; a < m_builtBuildings.Count(); a++)
+        {
+            if(m_builtBuildings[a].GetComponent<CoreBuilding>().m_buildingType == BuildingTypes.PowerCube)
+            {
+                tempCapacity += m_builtBuildings[a].GetComponent<CoreBuilding>().m_energyStorageCapacityBuilding;
+            }
+        }
+        return tempCapacity;
     }
 }
