@@ -23,6 +23,7 @@ public class PlayerInventory : MonoBehaviour
 			newItem.m_inventoryItemType = InventoryItem.InventoryItemTypes.Resource;
 			newItem.m_resourceType = resourceType;
 			newItem.m_resourceAmount = (int)Mathf.Round(resourceAmount);
+			Debug.Log((int)Mathf.Round(resourceAmount)+ " " + SetitemName(resourceType));
 			m_inventoryItemList.Add(newItem);
 		}
 		else if(m_inventoryItemList.Count() >= 1)

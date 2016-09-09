@@ -25,6 +25,7 @@ public class CoreGame : MonoBehaviour
     public float m_gatherResourceTime = 10.0f;
     #endregion
 
+    // v move section to "SpaceShipBehaviour.cs"
     #region space ship "Athena"
     public bool m_buildingSelected = false;
     int m_storageCapacity = 25;

@@ -5,6 +5,7 @@ using System.Linq;
 
 public class SpaceShipBehaviour : MonoBehaviour
 {
+	public string m_spaceShipFriendlyName = "Athena";
 	public List<GameObject> m_spaceShipParts;
 	public float m_spaceShipHullintegrity = 0.0f;
 	public float m_spaceShipUseability = 0.0f;
@@ -12,11 +13,16 @@ public class SpaceShipBehaviour : MonoBehaviour
 	public bool m_aiCoreLive = false;
 	public bool m_reactorDriveLive = false;
 
-	public enum AiCoreSensorLevels{Offline, Level1, Level2, Level3, Level4}
+	public enum AiCoreSensorLevels{Offline, SensorLevel1, SensorLevel2, SensorLevel3, SensorLevel4}
 	public AiCoreSensorLevels m_currentAiCoreSensorLevel;
 	public float m_sensorScanCooldownTime = 30.0f;
 	private float tempSensorTime = 0.0f;
 	public bool m_sensorScanReady = true;
+
+	public float m_spaceShipStorageCapacity = 250.0f;
+	public enum SpaceShipStorageLevels{ StorageLevle1, StorageLevel2, StorageLevel3}
+	public SpaceShipStorageLevels m_spaceShipStrorageLevel;
+
 
 	void Start()
 	{
@@ -24,7 +30,8 @@ public class SpaceShipBehaviour : MonoBehaviour
 		foreach(Transform shipPart in GetComponentInChildren<Transform>())
 		{
 			m_spaceShipParts.Add(shipPart.gameObject);
-		} 
+		}
+		AdjustSpaceShipStorage();
 	}
 
 	void FixedUpdate()
@@ -43,28 +50,44 @@ public class SpaceShipBehaviour : MonoBehaviour
 			}
 		}
 	}
+	void AdjustSpaceShipStorage()
+	{
+		switch(m_spaceShipStrorageLevel)
+		{
+			case SpaceShipStorageLevels.StorageLevle1 :
+				m_spaceShipStorageCapacity = 250.0f;
+			break;
 
+			case SpaceShipStorageLevels.StorageLevle2 :
+				m_spaceShipStorageCapacity = 500.0f;
+			break;
+
+			case SpaceShipStorageLevels.StorageLevle3 :
+				m_spaceShipStorageCapacity = 1000.0f;
+			break;
+		}
+	}
 	public void ScanEnvironment()
 	{
 		// scan environment
 		switch(m_currentAiCoreSensorLevel)
 		{
-			case AiCoreSensorLevels.Level1 :
+			case AiCoreSensorLevels.SensorLevel1 :
 			// can detect and identify resources x units from ship
 			break;
 
-			case AiCoreSensorLevels.Level2 :
+			case AiCoreSensorLevels.SensorLevel2 :
 			// can detect and identify resources xx units from ship
 			// can detect pods of other astronauts xx units from ship
 			break;
 
-			case AiCoreSensorLevels.Level3 :
+			case AiCoreSensorLevels.SensorLevel3 :
 			// can detect and identify resources xxx units from ship
 			// can detect pods of other astronauts xxx units from ship
 			// can detect previous civilization
 			break;
 
-			case AiCoreSensorLevels.Level4 :
+			case AiCoreSensorLevels.SensorLevel4 :
 			// can highlight previous civilization pictograms
 			// can understand pictograms
 			break;

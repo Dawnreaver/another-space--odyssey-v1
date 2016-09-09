@@ -74,7 +74,7 @@ public class ResourceBehaviour : MonoBehaviour
                 }
                 
             }
-            else if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
+            /*else*/ if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
             {
                 m_coreGameObject.GetComponent<PlayerInventory>().AddResourceToInventory(m_resourceType, m_resourceDepot);
                 m_resourceAmmount -= m_resourceDepot;
@@ -86,10 +86,18 @@ public class ResourceBehaviour : MonoBehaviour
 
                 m_productionActive = true;
             }
-            else if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
+            /*else*/ if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
             {
                 Debug.Log("Resource depleted!");
-                gameObject.SetActive(false);
+                if(m_resourceType != ResourceBreakdownTypes.ScrapMetal)
+                {
+                    gameObject.SetActive(false);
+                }
+                else
+                {
+                    GetComponent<SpaceShipPart>().m_spaceShipPartCondition = SpaceShipPart.SpaceShipPartConditions.ReadyToRepair;
+                    gameObject.Renderer.enabled = false;
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ using System.Linq;
 
 public class CorePlayer : MonoBehaviour
 {
-	public string m_playerFriendlyName ="";
+	public string m_playerFriendlyName ="Jade";
 	
 	public enum PlayerJobClasses {ScienceOfficer, BioMedicalOfficer, ChiefEngineer}
 	public PlayerJobClasses m_playerJob = PlayerJobClasses.ScienceOfficer;

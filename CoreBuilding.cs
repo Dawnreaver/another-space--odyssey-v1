@@ -35,7 +35,7 @@ public class CoreBuilding : MonoBehaviour
         }
         if(m_energyDepot >= 50.0f)
         {
-            ReleaseEnergy(50.0f);
+            ReleaseEnergy(m_energyDepot);
         }
 	}
 
