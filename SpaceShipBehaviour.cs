@@ -13,6 +13,9 @@ public class SpaceShipBehaviour : MonoBehaviour
 	public SpaceShipStorageLevels m_spaceShipStrorageLevel;
 	public float m_spaceShipHullIntegrity = 0.0f;
 	public float m_spaceShipUseability = 0.0f;
+
+	public Mesh[] m_spaceShipPartMeshes; //[0] -[x] space ship parts
+	public Material[] m_spaceShipPartMatrials; // [0] Broken Material [1] Selected Material Fixable [2] Fixed Material
 	#endregion
 
 	#region reactor drive
@@ -28,8 +31,6 @@ public class SpaceShipBehaviour : MonoBehaviour
 	private float tempSensorTime = 0.0f;
 	public bool m_sensorScanReady = true;
 	#endregion
-
-	
 	
 	#region BioDeck
 	float m_bioDeckHP = 100.0f;
@@ -47,7 +48,7 @@ public class SpaceShipBehaviour : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		// Player can scan once the AiCore is live meaning the sensor can be utilised
+		// Player can scan once the AiCore is live, meaning the sensor can be utilised
 		if(!m_sensorScanReady && m_currentAiCoreSensorLevel != AiCoreSensorLevels.Offline)
 		{
 			if(tempSensorTime < m_sensorScanCooldownTime)
@@ -81,6 +82,7 @@ public class SpaceShipBehaviour : MonoBehaviour
 	public void ScanEnvironment()
 	{
 		// scan environment
+		// trigger scan visualisation
 		switch(m_currentAiCoreSensorLevel)
 		{
 			case AiCoreSensorLevels.SensorLevel1 :

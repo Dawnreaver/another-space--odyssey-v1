@@ -86,10 +86,10 @@ public class CoreBuilding : MonoBehaviour
             break;
         }
     }
-    void SetBuilding(int m_buildingProperties)
+    void SetBuilding(int buildingProperties)
     {
-        gameObject.GetComponent<MeshFilter>().mesh = m_buildingMesh[m_buildingProperties];
-        gameObject.GetComponent<Renderer>().material = m_buildingMaterials[m_buildingProperties];
+        gameObject.GetComponent<MeshFilter>().mesh = m_buildingMesh[buildingProperties];
+        gameObject.GetComponent<Renderer>().material = m_buildingMaterials[buildingProperties];
     }
 
     void ReleaseEnergy(float energyAmount)
