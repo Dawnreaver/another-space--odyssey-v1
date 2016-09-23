@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,45 +9,45 @@ public class PlayerInventory : MonoBehaviour
 	void Start()
 	{
 		m_inventoryItemList = new List<InventoryItem>();
-		InitializeInventory();
 	}
 
 	public void AddResourceToInventory( ResourceBehaviour.ResourceTypes resourceType, float resourceAmount)
 	{
-        Debug.Log("Adding resource to item");
-		if(m_inventoryItemList.Count() == 0 )
-		{
-			InventoryItem newItem = new InventoryItem();
-            newItem.m_inventoryItemName = SetitemName(resourceType);
-			newItem.m_inventoryItemType = InventoryItem.InventoryItemTypes.Resource;
-			newItem.m_resourceType = resourceType;
-			newItem.m_resourceAmount = (int)Mathf.Round(resourceAmount);
-			Debug.Log((int)Mathf.Round(resourceAmount)+ " " + SetitemName(resourceType));
-			m_inventoryItemList.Add(newItem);
-		}
-		else if(m_inventoryItemList.Count() >= 1)
-		{
-			for(int a = 0; a < m_inventoryItemList.Count(); a++)
-			{
-				if(m_inventoryItemList[a].m_resourceType == resourceType && m_inventoryItemList[a].m_inventoryItemType == InventoryItem.InventoryItemTypes.Resource)
-				{
-					m_inventoryItemList[a].m_resourceAmount += (int)Mathf.Round(resourceAmount);
-				}
-			}
-		}
-	}
+        InventoryItem item = m_inventoryItemList.Find(x => x.m_resourceType == resourceType);
+        if(item == null)
+        {
+            CreateNewInventoryResourceItem(resourceType, resourceAmount);
+        }
+        else if( item != null)
+        {
+            item.m_resourceAmount += Mathf.RoundToInt(resourceAmount);
+        }
+    }
 
-	void InitializeInventory()
-	{
-		// load items from save ?
-	}
+    #region Saving and loading the iventory
+    /*	void InitializeInventory()
+        {
+            // load items from save ?
+        }
 
-	void SavePlayerInventory()
-	{
-		// save player inventory ? 
-	}
+        void SavePlayerInventory()
+        {
+            // save player inventory ? 
+        }
+        */
+    #endregion
 
-    string SetitemName(ResourceBehaviour.ResourceTypes resourceType)
+    void CreateNewInventoryResourceItem(ResourceBehaviour.ResourceTypes resourceType, float resourceAmount)
+    {
+        InventoryItem newItem = new InventoryItem();
+        newItem.m_inventoryItemName = SetItemName(resourceType);
+        newItem.m_inventoryItemType = InventoryItem.InventoryItemTypes.Resource;
+        newItem.m_resourceType = resourceType;
+        newItem.m_resourceAmount = (int)Mathf.Round(resourceAmount);
+        m_inventoryItemList.Add(newItem);
+    }
+
+    string SetItemName(ResourceBehaviour.ResourceTypes resourceType)
     {
         string itemName = "";
         switch (resourceType)
@@ -70,6 +69,5 @@ public class PlayerInventory : MonoBehaviour
                 break;
         }
         return itemName;
-    }
-    
+    } 
 }

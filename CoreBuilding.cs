@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CoreBuilding : MonoBehaviour
 {
@@ -25,7 +24,7 @@ public class CoreBuilding : MonoBehaviour
         {
             m_coreGame = GameObject.FindGameObjectWithTag("CoreGameObject").GetComponent<CoreGame>();
         }
-        if ()
+        //if ()
 	}
 	
 	// Update is called once per frame
@@ -43,10 +42,10 @@ public class CoreBuilding : MonoBehaviour
 
     public void SetBuildingType(CoreGame.BuildingTypes buildingType)
     {
-        switch(buildingType)
-        {
-            m_buildingType = buildingType;
+        m_buildingType = buildingType;
 
+        switch (buildingType)
+        {
             case CoreGame.BuildingTypes.Greenhouse:
                 SetBuilding(0);
                 gameObject.name = "Green House";
@@ -95,8 +94,8 @@ public class CoreBuilding : MonoBehaviour
     void ReleaseEnergy(float energyAmount)
     {
         m_energyDepot -= energyAmount;
-        m_coreGame.m_storedEnergy += energyAmount;
-        GetProductionEffect(energyAmount);
+        m_coreGame.m_storedEnergy += Mathf.Round(energyAmount);
+        GetProductionEffect(Mathf.Round(energyAmount));
     }
 
     void GetProductionEffect(float value)

@@ -40,6 +40,7 @@ public class CoreGame : MonoBehaviour
 
     #region buildings
     private List<GameObject> m_builtBuildings;
+    public bool m_buildingSelected = false;
     #endregion
 
     #region object pools
@@ -57,6 +58,7 @@ public class CoreGame : MonoBehaviour
     public List<GameObject> m_resources;
     #endregion
 
+    public float m_storedEnergy = 0.0f;
     void Start()
     {
         m_poolingObject = new ObjectPoolingClass(gameObject, m_inGameMenuLogic.gameObject, m_coreBuilding, m_resourceProductionEffect);
@@ -146,6 +148,7 @@ public class CoreGame : MonoBehaviour
 
         }
     }
+
     public void EnableBuildeMode()
     {
         m_buildMode = true;

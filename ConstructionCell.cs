@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class ConstructionCell : MonoBehaviour
 {
@@ -47,4 +46,6 @@ public class ConstructionCell : MonoBehaviour
     {
         m_active = false;
     }
+
+   
 }

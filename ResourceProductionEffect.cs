@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class ResourceProductionEffect : MonoBehaviour
 {
     public GameObject m_coreGameObject;
     public Canvas m_interface;
-	public enum ResourceTypes {Energy}
+	public enum ResourceTypes { Crystal, Energy, Food, Metal, Rock,  Water}
     public ResourceTypes m_resourceType;
-    public Sprite[] m_resourceIcons = new Sprite[4];
-    public Color[] m_resourceColour = new Color[4];
+    public Sprite[] m_resourceIcons = new Sprite[6];
+    public Color[] m_resourceColour = new Color[6];
 
     public Image m_resourceIcon;
     public Text m_resourceText;
@@ -48,11 +47,46 @@ public class ResourceProductionEffect : MonoBehaviour
     {
         switch(resource)
         {
-            case ResourceTypes.Energy:
+            case ResourceTypes.Crystal:
                 m_resourceIcon.sprite = m_resourceIcons[0];
                 m_resourceIcon.color = m_resourceColour[0];
                 m_resourceText.text = "+" + value;
                 m_resourceText.color = m_resourceColour[0];
+                break;
+
+            case ResourceTypes.Energy:
+                m_resourceIcon.sprite = m_resourceIcons[1];
+                m_resourceIcon.color = m_resourceColour[1];
+                m_resourceText.text = "+" + value;
+                m_resourceText.color = m_resourceColour[1];
+            break;
+
+            case ResourceTypes.Food:
+                m_resourceIcon.sprite = m_resourceIcons[2];
+                m_resourceIcon.color = m_resourceColour[2];
+                m_resourceText.text = "+" + value;
+                m_resourceText.color = m_resourceColour[2];
+            break;
+
+            case ResourceTypes.Metal:
+                m_resourceIcon.sprite = m_resourceIcons[3];
+                m_resourceIcon.color = m_resourceColour[3];
+                m_resourceText.text = "+" + value;
+                m_resourceText.color = m_resourceColour[3];
+            break;
+
+            case ResourceTypes.Rock:
+                m_resourceIcon.sprite = m_resourceIcons[4];
+                m_resourceIcon.color = m_resourceColour[4];
+                m_resourceText.text = "+" + value;
+                m_resourceText.color = m_resourceColour[4];
+            break;
+
+            case ResourceTypes.Water:
+                m_resourceIcon.sprite = m_resourceIcons[5];
+                m_resourceIcon.color = m_resourceColour[5];
+                m_resourceText.text = "+" + value;
+                m_resourceText.color = m_resourceColour[5];
             break;
         }
     }

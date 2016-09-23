@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +21,6 @@ public class ObjectPoolingClass
 
     public ObjectPoolingClass(GameObject coreGame, GameObject guiObject, GameObject building, GameObject effect)
     {
-        Debug.Log("initialized object pooling class");
         m_coreGameObject = coreGame;
         m_coreBuilding = building;
         m_resourceProductionEffect = effect;

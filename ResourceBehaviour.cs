@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +8,8 @@ public class ResourceBehaviour : MonoBehaviour
     public string m_resourceSystemName = "Resource001";
     public bool m_manualPurge = false;
     public GameObject m_coreGameObject;
+    public GameObject m_buildingGrid;
+    public GameObject m_buildingGridCell;
     
     public enum ResourceTypes { AsteroidMetal, Crystal, Ice, Rock, ScrapMetal}
     public ResourceTypes m_resourceType;
@@ -30,7 +31,6 @@ public class ResourceBehaviour : MonoBehaviour
 
     // Produceable resource
     public float m_productionTime;
-    public bool m_productionActive = false;
     
     public bool m_productionTimerActive = false;
     public bool m_isHarvestedByPlayer = false;
@@ -45,10 +45,8 @@ public class ResourceBehaviour : MonoBehaviour
         InitialiseResourceBrakedown();
     }
 	
-	// Update is called once per frame
 	void FixedUpdate ()
     {
-        // Debug function until the production of resources is completed	
         if(m_manualPurge)
         {
             PurgeResource();
@@ -56,48 +54,49 @@ public class ResourceBehaviour : MonoBehaviour
         }
 
         if(m_isHarvestedByPlayer)
-        {
-            if(m_productionTimerActive && m_resourceAmmount > 0.0f)
+        {  
+            if (m_productionTimerActive && m_resourceAmmount > 0.0f)
             {
                 m_gatheringTime -= 1 * Time.deltaTime;
                 m_resourceDepot += 1 * Time.deltaTime;
-
-                if(m_resourceBreakdownType == ResourceBreakdownTypes.Shrinks)
+                if (m_resourceBreakdownType == ResourceBreakdownTypes.Shrinks)
                 {
+                    m_resourceAmmount -= 1 * Time.deltaTime;
                     AdjustResourceHeight();
                 }
-
-                if( m_gatheringTime < 0.0f)
+                if ( m_gatheringTime < 0.0f)
                 {
                     m_productionTimerActive = false;
                     m_gatheringTime = m_coreGameObject.GetComponent<CoreGame>().m_gatherResourceTime;
-                }
-                
+                }              
             }
-            /*else*/ if(!m_productionTimerActive && m_resourceAmmount > 0.0f)
+            else if(!m_productionTimerActive && m_resourceAmmount > 0.0f && m_resourceDepot > 0.0f)
             {
+                GetProductionEffect(m_resourceType, Mathf.Round(m_resourceDepot));
                 m_coreGameObject.GetComponent<PlayerInventory>().AddResourceToInventory(m_resourceType, m_resourceDepot);
-                m_resourceAmmount -= m_resourceDepot;
-                m_resourceDepot = 0.0f;
-                if(m_resourceBreakdownType == ResourceBreakdownTypes.Breaks)
-                {                    
+
+                if (m_resourceBreakdownType == ResourceBreakdownTypes.Breaks)
+                { 
+                    m_resourceAmmount -= m_resourceDepot;
                     PurgeResource();
                 }
-
-                m_productionActive = true;
+                m_resourceDepot = 0.0f;
             }
-            /*else*/ if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
+            if(!m_productionTimerActive && m_resourceAmmount <= 0.0f)
             {
                 Debug.Log("Resource depleted!");
                 if(m_resourceType != ResourceTypes.ScrapMetal)
                 {
                     gameObject.SetActive(false);
+                    SpawnBuildingGridCell();
                 }
                 else
                 {
                     GetComponent<SpaceShipPart>().m_spaceShipPartCondition = SpaceShipPart.SpaceShipPartConditions.ReadyToRepair;
                     gameObject.GetComponent<Renderer>().enabled = false;
                 }
+
+                m_isHarvestedByPlayer = false;
             }
         }
     }
@@ -127,7 +126,6 @@ public class ResourceBehaviour : MonoBehaviour
                 AdjustResourceHeight();
             break;
         }
-       
     }
 
     public void StopHarvest()
@@ -175,5 +173,39 @@ public class ResourceBehaviour : MonoBehaviour
     	{
     		m_isHarvestedByPlayer = true;
     	}
+    }
+
+    void SpawnBuildingGridCell()
+    {
+        GameObject buildingGridHex = Instantiate(m_buildingGridCell, new Vector3(gameObject.transform.position.x, 0.0f, gameObject.transform.position.z), Quaternion.identity) as GameObject;
+        buildingGridHex.name = "hexagon";
+        buildingGridHex.transform.parent = m_buildingGrid.transform;
+        m_coreGameObject.GetComponent<CoreGame>().m_constructionCells.Add(buildingGridHex);
+    }
+
+    void GetProductionEffect(ResourceTypes resourceType, float value)
+    {
+        switch (resourceType)
+        {
+            case ResourceTypes.AsteroidMetal:
+                m_coreGameObject.GetComponent<CoreGame>().SendProductionEffect(gameObject.transform, ResourceProductionEffect.ResourceTypes.Metal, value);
+            break;
+
+            case ResourceTypes.Crystal:
+                m_coreGameObject.GetComponent<CoreGame>().SendProductionEffect(gameObject.transform, ResourceProductionEffect.ResourceTypes.Crystal, value);
+            break;
+
+            case ResourceTypes.Ice:
+                m_coreGameObject.GetComponent<CoreGame>().SendProductionEffect(gameObject.transform, ResourceProductionEffect.ResourceTypes.Water, value);
+            break;
+
+            case ResourceTypes.Rock:
+                m_coreGameObject.GetComponent<CoreGame>().SendProductionEffect(gameObject.transform, ResourceProductionEffect.ResourceTypes.Rock, value);
+            break;
+
+            case ResourceTypes.ScrapMetal:
+                m_coreGameObject.GetComponent<CoreGame>().SendProductionEffect(gameObject.transform, ResourceProductionEffect.ResourceTypes.Metal, value);
+            break;
+        }
     }
 }
